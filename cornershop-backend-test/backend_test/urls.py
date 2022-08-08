@@ -13,10 +13,18 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.urls import path
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
+
+from apps.employees.urls import EMPLOYEES_ROUTER
 
 from .utils.healthz import healthz
 
+API_ROUTER = DefaultRouter()
+
+API_ROUTER.registry.extend(EMPLOYEES_ROUTER.registry)
+
 urlpatterns = [
     path("healthz", healthz, name="healthz"),
+    path("api/", include((API_ROUTER.urls, "api"))),
 ]

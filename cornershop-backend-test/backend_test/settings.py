@@ -47,9 +47,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_extensions",
     "backend_test.utils",
-
     # Apps
-    'apps.employees',
+    "apps.employees",
 ]
 
 MIDDLEWARE = [
