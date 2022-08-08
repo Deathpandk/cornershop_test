@@ -10,6 +10,8 @@ class Menu(models.Model):
 class MenuOption(models.Model):
     """Model for a menu's choice option"""
 
-    menu = models.ForeignKey("menu.Menu", on_delete=models.CASCADE)
+    menu = models.ForeignKey(
+        "menu.Menu", on_delete=models.CASCADE, related_name="options"
+    )
     name = models.CharField(max_length=64)
     description = models.CharField(max_length=256, null=True, blank=True)
