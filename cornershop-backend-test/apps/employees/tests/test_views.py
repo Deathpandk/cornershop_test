@@ -1,28 +1,19 @@
-from django.contrib.auth.models import User
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase
 
 from apps.employees.factories import EmployeeFactory
+from backend_test.testing import APITestCaseWithLogin
 
 from .test_serializers import EMPLOYEE_DATA
 
 
-class EmployeeViewSetTest(APITestCase):
+class EmployeeViewSetTest(APITestCaseWithLogin):
     """Test Employee Endpoints"""
 
     def setUp(self):
-        self.user_credentials = {"username": "Nora", "password": "cornershop"}
-        user = User.objects.create(username=self.user_credentials.get("username"))
-        user.set_password(self.user_credentials.get("password"))
-        user.save()
+        super(EmployeeViewSetTest, self).setUp()
 
         self.employee = EmployeeFactory()
-
-    def login(self):
-        """Login with authenticated user"""
-
-        self.client.login(**self.user_credentials)
 
     def list_employees(self):
         """Call List Endpoint"""
@@ -57,7 +48,7 @@ class EmployeeViewSetTest(APITestCase):
         )
 
     def test_create_endpoint(self):
-        """Test Create endpoint with anonymous user, expect a 403 error"""
+        """Test Create endpoint with logged user"""
         self.login()
         response = self.create_employee(EMPLOYEE_DATA)
 
