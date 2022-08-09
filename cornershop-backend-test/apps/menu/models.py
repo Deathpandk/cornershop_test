@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from django.db import models
 
 
@@ -15,3 +17,14 @@ class MenuOption(models.Model):
     )
     name = models.CharField(max_length=64)
     description = models.CharField(max_length=256, null=True, blank=True)
+
+
+class MenuUUID(models.Model):
+    """Model to store UUID's for employees"""
+
+    uuid = models.UUIDField(primary_key=True, default=uuid4)
+    employee = models.ForeignKey("employees.Employee", on_delete=models.CASCADE)
+    menu = models.ForeignKey("menu.Menu", on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ("menu", "employee")
