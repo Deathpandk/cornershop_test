@@ -17,12 +17,14 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from apps.employees.urls import EMPLOYEES_ROUTER
+from apps.menu.urls import MENU_ROUTER
 
 from .utils.healthz import healthz
 
 API_ROUTER = DefaultRouter()
 
 API_ROUTER.registry.extend(EMPLOYEES_ROUTER.registry)
+API_ROUTER.registry.extend(MENU_ROUTER.registry)
 
 urlpatterns = [
     path("healthz", healthz, name="healthz"),
