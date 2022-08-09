@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "backend_test.utils",
     # Apps
     "apps.employees",
+    "apps.menu",
 ]
 
 MIDDLEWARE = [
