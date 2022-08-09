@@ -53,11 +53,12 @@ class MenuUUIDModelTest(TestCase):
     def test_create_menu_uuid(self):
         """Test create Menu UUID"""
 
-        MenuUUID.objects.create(
+        menu_uuid = MenuUUID.objects.create(
             menu=self.menu,
             employee=self.employee,
         )
         self.assertTrue(MenuUUID.objects.exists())
+        self.assertIsNotNone(menu_uuid.uuid)
 
     def test_create_existent_menu_uuid(self):
         """Test raises error when creating menu with repeated menu-employee"""
