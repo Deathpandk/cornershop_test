@@ -54,4 +54,5 @@ wcwidth==0.2.5
 wrapt==1.12.1
 factory-boy==3.2.1
 schema==0.7.5
+slack_sdk==3.18.1
 django-filter==22.1

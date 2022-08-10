@@ -1,6 +1,9 @@
+from unittest.mock import patch
+
 from django.urls import reverse
 from rest_framework import status
 
+from apps.employees.factories import EmployeeFactory
 from apps.menu.factories import MenuFactory
 from backend_test.testing import APITestCaseWithLogin
 
@@ -73,6 +76,45 @@ class MenuViewSetCreateTest(APITestCaseWithLogin):
         """Test Create endpoint with anonymous user, expect a 403 error"""
 
         response = self.create_menu(MENU_DATA)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(
+            response.json().get("detail"),
+            "Authentication credentials were not provided.",
+        )
+
+
+class MenuViewSetRemindersTest(APITestCaseWithLogin):
+    """Test Reminders endpoint to consume celery task"""
+
+    def setUp(self):
+        super(MenuViewSetRemindersTest, self).setUp()
+        self.menu = MenuFactory()
+        self.employee = EmployeeFactory(slack_id="U02H6L5A2G0")
+        self.employee_2 = EmployeeFactory()
+
+    def send_reminders(self, menu):
+        """Call Send Reminders Endpoint"""
+
+        url = reverse("api:menu-reminders", args=[menu.pk])
+
+        return self.client.post(url, {})
+
+    @patch("apps.menu.celery_tasks.create_and_send_uuids.delay", return_value={})
+    def test_send_reminders(self, mocked_celery):
+        """Test Send Reminders Endpoint"""
+
+        self.login()
+        response = self.send_reminders(self.menu)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        mocked_celery.assert_called_once()
+
+    def test_reminders_endpoint_with_anonymous_user(self):
+        """Test Reminders endpoint with anonymous user, expect a 403 error"""
+
+        response = self.send_reminders(self.menu)
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(
