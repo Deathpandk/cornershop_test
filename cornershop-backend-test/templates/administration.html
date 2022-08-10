@@ -44,6 +44,8 @@
             base_url: "/api/menu/",
             menu_list: [],
             date: "",
+            option_name: "",
+            option_description: "",
         },
         methods: {
             get_menu_list(){
@@ -66,12 +68,50 @@
                     })
                 }).catch(error => {
                     [key, value] = Object.entries(error.response.data)[0]
+                    if(key == "non_field_errors"){key=value[0]; value=[];}
                     Swal.fire({
                         icon: "error",
-                        title: value[0],
+                        title: key,
+                        text: value[0],
                     })
                 })
-            }
+            },
+            send_reminders(menu_pk){
+                axios.post(this.base_url + menu_pk + "/reminders/", {})
+                .then(response => {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Slack Messages will be send",
+                    })
+                }).catch(error => {
+                    Swal.fire({
+                        icon: "error",
+                        title: "An error occurred",
+                    })
+                })
+            },
+            create_menu_option(menu_pk){
+                var self = this;
+                axios.post("/api/menuoption/", {
+                    name: this.option_name,
+                    description: this.option_description,
+                    menu: menu_pk,
+                }).then(response => {
+                    self.get_menu_list()
+                    Swal.fire({
+                        icon: "success",
+                        title: "Added Option",
+                    })
+                }).catch(error => {
+                    [key, value] = Object.entries(error.response.data)[0]
+                    if(key == "non_field_errors"){key=value[0]; value=[];}
+                    Swal.fire({
+                        icon: "error",
+                        title: key,
+                        text: value[0],
+                    })
+                })
+            },
         },
         mounted(){
             this.get_menu_list()
@@ -104,15 +144,17 @@
                     self.get_employees_list()
                     Swal.fire({
                         icon: "success",
-                        title: "Empleado "+self.name+" creado",
+                        title: "Employee "+self.name+" created",
                     })
                     self.name = "";
                     self.slack_id = "";
                 }).catch(error => {
                     [key, value] = Object.entries(error.response.data)[0]
+                    if(key == "non_field_errors"){key=value[0]; value=[];}
                     Swal.fire({
                         icon: "error",
-                        title: value[0],
+                        title: key,
+                        text: value[0],
                     })
                 })
             }

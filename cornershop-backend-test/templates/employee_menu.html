@@ -1,1 +1,80 @@
 {% extends "base.html" %}
+
+
+{% block content %}
+<div class="row mt-5" id="menu-content">
+    <div class="col-12">
+        <h2>Hi! This is the menu for {v menu.date v}</h2>
+        <p>Please choose an option </p>
+    </div>
+    <div class="col-12">
+        <div class="form-check" v-for="option in menu.options">
+            <input class="form-check-input" type="radio" name="option" :id="'CH'+option.pk"
+                v-model="selected_option" :value="option.pk">
+            <label class="form-check-label" :for="'CH'+option.pk">
+                {v option.name v}
+            </label>
+            <p>{v option.description v}</p>
+        </div>
+        <div class="mb-3">
+          <label for="comments" class="form-label">Specifications:</label>
+          <input type="text" class="form-control" id="comments" v-model="comments">
+        </div>
+    </div>
+    <div class="col-12">
+        <button class="btn btn-success" @click="create_order()">
+            Send Order
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    var uuid = window.location.pathname.split("/")[2]
+
+    const menu = new Vue({
+        el: "#menu-content",
+        delimiters: ['{v', 'v}'],
+        data: {
+            uuid: uuid,
+            menu: {},
+            selected_option: "",
+            comments: "",
+        },
+        methods: {
+            get_menu(){
+                var self = this;
+                axios.get("/api/menu/" + this.uuid + "/")
+                .then(response => {
+                    self.menu = response.data
+                })
+            },
+            create_order(){
+                var self = this;
+                axios.post("/api/orders/", {
+                    uuid: this.uuid,
+                    option: this.selected_option,
+                    comments: this.comments
+                }).then(response => {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Your order have been received.",
+                    })
+                }).catch(error => {
+                    [key, value] = Object.entries(error.response.data)[0]
+                    if(key == "non_field_errors"){key=value[0]; value=[];}
+                    Swal.fire({
+                        icon: "error",
+                        title: key,
+                        text: value[0],
+                    })
+                })
+            }
+        },
+        mounted(){
+            this.get_menu()
+        }
+    })
+</script>
+{% endblock %}

@@ -44,6 +44,11 @@ class OrderSerializer(serializers.ModelSerializer):
 
         option = attrs.get("option")
 
+        if Order.objects.filter(menu=menu_uuid.menu, employee=menu_uuid.employee):
+            raise serializers.ValidationError(
+                f"Order for {menu_uuid.menu.date} already exists"
+            )
+
         if menu_uuid.menu.date != datetime.date.today():
             raise serializers.ValidationError("Only Orders for today menu available")
 

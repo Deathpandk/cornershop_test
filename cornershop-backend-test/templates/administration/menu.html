@@ -22,8 +22,12 @@
                 </button>
             </h2>
             <div :id="'M' + menu.pk" class="accordion-collapse collapse" aria-labelledby="headingOne">
-                <div class="accordion-body">
-                {v menu.orders v} {v menu.options v}
+                <div class="accordion-body ">
+                    <button class="btn btn-primary mb-2" @click="send_reminders(menu.pk)">
+                        Send Slack Messages
+                    </button>
+
+                    {% include "./menu_content.html" %}
                 </div>
             </div>
         </div>

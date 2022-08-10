@@ -26,5 +26,7 @@ class MenuUUID(models.Model):
     employee = models.ForeignKey("employees.Employee", on_delete=models.CASCADE)
     menu = models.ForeignKey("menu.Menu", on_delete=models.CASCADE)
 
+    is_send = models.BooleanField(default=False)
+
     class Meta:
         unique_together = ("menu", "employee")
