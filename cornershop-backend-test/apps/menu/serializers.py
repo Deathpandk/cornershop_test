@@ -10,7 +10,8 @@ class MenuOptionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MenuOption
-        fields = ["name", "description", "menu"]
+        fields = ["name", "description", "menu", "pk"]
+        read_only_fields = ["pk"]
         extra_kwargs = {"menu": {"write_only": True}}
 
 
@@ -21,7 +22,8 @@ class MenuSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Menu
-        fields = ["date", "options"]
+        fields = ["date", "options", "pk"]
+        read_only_fields = ["pk"]
 
 
 class MenuWithOrdersSerializer(MenuSerializer):
@@ -30,4 +32,4 @@ class MenuWithOrdersSerializer(MenuSerializer):
     orders = OrderSerializer(many=True, read_only=True)
 
     class Meta(MenuSerializer.Meta):
-        fields = ["date", "options", "orders"]
+        fields = ["date", "options", "orders", "pk"]

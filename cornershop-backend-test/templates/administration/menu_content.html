@@ -1,0 +1,51 @@
+<nav>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab"
+            :data-bs-target="'#nav-options' + menu.pk" type="button" role="tab" aria-controls="nav-home"
+            aria-selected="true">
+        Options
+    </button>
+    <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab"
+            :data-bs-target="'#nav-orders' + menu.pk" type="button" role="tab" aria-controls="nav-profile"
+            aria-selected="false">
+        Orders
+    </button>
+  </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+  <div class="tab-pane fade show active" :id="'nav-options' + menu.pk" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+      <div class="row">
+        <div class="col-4 mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" v-model="option_name">
+        </div>
+        <div class="col-8 mb-3">
+            <label for="description" class="form-label">Description</label>
+            <input type="text" class="form-control" id="description" v-model="option_description">
+        </div>
+        <div class="col-4">
+            <button class="btn btn-success" @click="create_menu_option(menu.pk)">
+                Add Option
+            </button>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="row" v-for="option in menu.options">
+          <div class="col-12">
+              <h3>{v option.name v}</h3>
+              <p>{v option.description v}</p>
+          </div>
+      </div>
+  </div>
+  <div class="tab-pane fade" :id="'nav-orders' + menu.pk" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
+      <div class="row" v-for="order in menu.orders">
+          <div class="col-12">
+              <h3>{v order.name v}</h3>
+              <p>{v order.choice v}</p>
+              <p>{v order.comments v}</p>
+          </div>
+      </div>
+  </div>
+</div>

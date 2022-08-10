@@ -15,11 +15,13 @@ from apps.menu.serializers import (
 )
 
 MENU_OPTION_SCHEMA = {
+    "pk": int,
     "name": str,
     "description": str,
 }
 
 MENU_SCHEMA = {
+    "pk": int,
     "date": str,
     "options": [MENU_OPTION_SCHEMA],
 }

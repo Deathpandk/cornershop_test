@@ -1,0 +1,35 @@
+<div id="menu-content">
+    <div class="row">
+        <div class="col-12">
+            <div class="mb-3 mt-3">
+              <label for="date" class="form-label">Date:</label>
+              <input type="date" class="form-control" id="date" v-model="date">
+            </div>
+            <button class="btn btn-success" @click="create_menu()">
+                Create Menu
+            </button>
+        </div>
+    </div>
+
+<hr>
+
+    <div class="accordion" v-for="menu in menu_list">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" :data-bs-target="'#M' + menu.pk"
+                aria-expanded="true" aria-controls="collapseOne">
+                {v menu.date v}: {v menu.options.length v} options, {v menu.orders.length v} orders
+                </button>
+            </h2>
+            <div :id="'M' + menu.pk" class="accordion-collapse collapse" aria-labelledby="headingOne">
+                <div class="accordion-body ">
+                    <button class="btn btn-primary mb-2" @click="send_reminders(menu.pk)">
+                        Send Slack Messages
+                    </button>
+
+                    {% include "./menu_content.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

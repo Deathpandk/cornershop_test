@@ -29,4 +29,5 @@ API_ROUTER.registry.extend(MENU_ROUTER.registry)
 urlpatterns = [
     path("healthz", healthz, name="healthz"),
     path("api/", include((API_ROUTER.urls, "api"))),
+    path("", include("webpage.urls")),
 ]
