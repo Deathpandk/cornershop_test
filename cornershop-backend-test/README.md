@@ -34,7 +34,7 @@ env variable SLACK_TOKEN= with the current token
 
 * `make up`
 * `dev up`
-* `dev createsuperuser` (needed for administration panel)
+* `dev createsuperuser` (needed for Nora's panel)
 
 ##### Rebuilding the base Docker image
 
