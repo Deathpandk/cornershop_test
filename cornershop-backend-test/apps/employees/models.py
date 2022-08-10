@@ -12,7 +12,9 @@ class Order(models.Model):
     """Model to register employee menu election"""
 
     employee = models.ForeignKey("employees.Employee", on_delete=models.CASCADE)
-    menu = models.ForeignKey("menu.Menu", on_delete=models.PROTECT)
+    menu = models.ForeignKey(
+        "menu.Menu", on_delete=models.PROTECT, related_name="orders"
+    )
     option = models.ForeignKey("menu.MenuOption", on_delete=models.PROTECT)
 
     comments = models.CharField(max_length=512, null=True, blank=True)

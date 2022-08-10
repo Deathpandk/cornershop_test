@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from apps.employees.serializers import OrderSerializer
+
 from .models import Menu, MenuOption
 
 
@@ -20,3 +22,12 @@ class MenuSerializer(serializers.ModelSerializer):
     class Meta:
         model = Menu
         fields = ["date", "options"]
+
+
+class MenuWithOrdersSerializer(MenuSerializer):
+    """Serializer for menu including orders"""
+
+    orders = OrderSerializer(many=True, read_only=True)
+
+    class Meta(MenuSerializer.Meta):
+        fields = ["date", "options", "orders"]

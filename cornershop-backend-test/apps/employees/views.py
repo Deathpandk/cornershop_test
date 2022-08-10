@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
 from .models import Employee
-from .serializers import EmployeeSerializer
+from .serializers import EmployeeSerializer, OrderSerializer
 
 
 class EmployeeViewSet(GenericViewSet, CreateModelMixin, ListModelMixin):
@@ -12,3 +12,9 @@ class EmployeeViewSet(GenericViewSet, CreateModelMixin, ListModelMixin):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
     permission_classes = [IsAuthenticated]
+
+
+class PublicOrderViewSet(GenericViewSet, CreateModelMixin):
+    """Public order viewset to create orders"""
+
+    serializer_class = OrderSerializer
