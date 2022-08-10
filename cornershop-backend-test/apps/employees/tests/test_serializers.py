@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from django.test import TestCase
 from rest_framework.serializers import ValidationError
 
@@ -6,6 +8,7 @@ from schema import Schema
 from apps.employees.factories import EmployeeFactory
 from apps.employees.models import Employee
 from apps.employees.serializers import EmployeeSerializer
+from backend_test.utils.slack import simulate_error
 
 EMPLOYEE_SCHEMA = {
     "name": str,
@@ -29,7 +32,8 @@ class EmployeeSerializerTest(TestCase):
         schema = Schema(EMPLOYEE_SCHEMA)
         schema.validate(dict(serializer.data))
 
-    def test_serializer_create(self):
+    @patch("apps.employees.utils.slack_client.chat_postMessage")
+    def test_serializer_create(self, mocked_post_message):
         """Test serializer create"""
 
         serializer = EmployeeSerializer(data=EMPLOYEE_DATA)
@@ -59,6 +63,18 @@ class EmployeeSerializerTest(TestCase):
             serializer = EmployeeSerializer(data=data)
             serializer.is_valid(True)
         self.assertIn("no more than 16", str(error.exception))
+
+    @patch(
+        "apps.employees.utils.slack_client.chat_postMessage", side_effect=simulate_error
+    )
+    def test_serializer_with_invalid_slack_id(self, mocked_post_message):
+        """Test serializer with invalid slack_id"""
+
+        with self.assertRaises(ValidationError) as error:
+            serializer = EmployeeSerializer(data=EMPLOYEE_DATA)
+            serializer.is_valid(True)
+        error = error.exception.detail.get("non_field_errors")[0]
+        self.assertEqual(str(error), "Invalid Slack Id")
 
     def test_serializer_with_long_name_value(self):
         """Test serializer with more than 32 characters as name value"""

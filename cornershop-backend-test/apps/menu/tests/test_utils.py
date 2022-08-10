@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from django.test import TestCase
 
@@ -33,7 +33,7 @@ class MenuUUIDutilsTest(TestCase):
                 MenuUUID.objects.filter(employee=employee, menu=self.menu).exists()
             )
 
-    @patch("apps.menu.utils.slack_client.chat_postMessage", return_value=MagicMock())
+    @patch("apps.menu.utils.slack_client.chat_postMessage")
     def test_send_uuids_as_slack_message(self, mocked_post_message):
         """Test send uuids as slack message with a fail and a success"""
 

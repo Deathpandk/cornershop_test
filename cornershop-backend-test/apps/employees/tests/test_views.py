@@ -1,8 +1,11 @@
+from unittest.mock import patch
+
 from django.urls import reverse
 from rest_framework import status
 
 from apps.employees.factories import EmployeeFactory
 from backend_test.testing import APITestCaseWithLogin
+from backend_test.utils.slack import simulate_error
 
 from .test_serializers import EMPLOYEE_DATA
 
@@ -47,12 +50,27 @@ class EmployeeViewSetTest(APITestCaseWithLogin):
             "Authentication credentials were not provided.",
         )
 
-    def test_create_endpoint(self):
+    @patch("apps.employees.utils.slack_client.chat_postMessage")
+    def test_create_endpoint(self, mocked_post_message):
         """Test Create endpoint with logged user"""
         self.login()
         response = self.create_employee(EMPLOYEE_DATA)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.json())
+
+    @patch(
+        "apps.employees.utils.slack_client.chat_postMessage", side_effect=simulate_error
+    )
+    def test_create_endpoint_with_invalid_slack_id(self, mocked_post_message):
+        """Test Create endpoint with logged user"""
+        self.login()
+
+        response = self.create_employee(EMPLOYEE_DATA)
+
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST, response.json()
+        )
+        self.assertEqual("Invalid Slack Id", response.json().get("non_field_errors")[0])
 
     def test_create_endpoint_with_existing_slack_id(self):
         """Test Create endpoint with existing slack id, expect a 400 error"""

@@ -100,7 +100,7 @@ class MenuViewSetRemindersTest(APITestCaseWithLogin):
 
         return self.client.post(url, {})
 
-    @patch("apps.menu.celery_tasks.create_and_send_uuids.delay", return_value={})
+    @patch("apps.menu.celery_tasks.create_and_send_uuids.delay")
     def test_send_reminders(self, mocked_celery):
         """Test Send Reminders Endpoint"""
 
