@@ -1,11 +1,10 @@
-from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
 from apps.employees.models import Employee
 from apps.menu.models import Menu, MenuUUID
 from backend_test.envtools import getenv
+from backend_test.utils.slack import slack_client
 
-slack_client = WebClient(token=getenv("SLACK_TOKEN"))
 BASE_URL = getenv("BASE_URL")
 
 

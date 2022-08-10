@@ -5,9 +5,14 @@ from rest_framework.serializers import ValidationError
 
 from schema import Schema
 
+from apps.employees.tests.test_serializers import ORDER_SCHEMA
 from apps.menu.factories import MenuOptionFactory
 from apps.menu.models import Menu, MenuOption
-from apps.menu.serializers import MenuOptionSerializer, MenuSerializer
+from apps.menu.serializers import (
+    MenuOptionSerializer,
+    MenuSerializer,
+    MenuWithOrdersSerializer,
+)
 
 MENU_OPTION_SCHEMA = {
     "name": str,
@@ -17,6 +22,11 @@ MENU_OPTION_SCHEMA = {
 MENU_SCHEMA = {
     "date": str,
     "options": [MENU_OPTION_SCHEMA],
+}
+
+MENU_WITH_ORDERS_SCHEMA = {
+    **MENU_SCHEMA,
+    "orders": [ORDER_SCHEMA],
 }
 
 MENU_DATA = {"date": date(day=7, month=8, year=2022)}
@@ -37,6 +47,14 @@ class MenuSerializerTest(TestCase):
         serializer = MenuSerializer(self.menu)
 
         schema = Schema(MENU_SCHEMA)
+        schema.validate(dict(serializer.data))
+
+    def test_serializer_schema_with_orders(self):
+        """Test Menu Serializer Schema"""
+
+        serializer = MenuWithOrdersSerializer(self.menu)
+
+        schema = Schema(MENU_WITH_ORDERS_SCHEMA)
         schema.validate(dict(serializer.data))
 
     def test_serializer_create(self):

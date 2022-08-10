@@ -5,6 +5,7 @@ from rest_framework import status
 
 from apps.employees.factories import EmployeeFactory
 from apps.menu.factories import MenuFactory
+from apps.menu.models import MenuUUID
 from backend_test.testing import APITestCaseWithLogin
 
 from .test_serializers import MENU_DATA
@@ -41,6 +42,33 @@ class MenuViewSetListTest(APITestCaseWithLogin):
             response.json().get("detail"),
             "Authentication credentials were not provided.",
         )
+
+
+class MenuViewSetMenuTest(APITestCaseWithLogin):
+    """Test Menu Menu Endpoint"""
+
+    def setUp(self):
+        super(MenuViewSetMenuTest, self).setUp()
+        self.menu = MenuFactory()
+        self.employee = EmployeeFactory()
+        self.menu_uuid = MenuUUID.objects.create(
+            menu=self.menu,
+            employee=self.employee,
+        )
+
+    def get_menu(self, uuid):
+        """Call List Endpoint"""
+
+        url = reverse("api:menu-options", args=[uuid])
+
+        return self.client.get(url)
+
+    def test_list_endpoint(self):
+        """Test Menu endpoint with anonymous user"""
+        self.login()
+        response = self.get_menu(self.menu_uuid.uuid)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.json())
 
 
 class MenuViewSetCreateTest(APITestCaseWithLogin):
@@ -100,7 +128,7 @@ class MenuViewSetRemindersTest(APITestCaseWithLogin):
 
         return self.client.post(url, {})
 
-    @patch("apps.menu.celery_tasks.create_and_send_uuids.delay", return_value={})
+    @patch("apps.menu.celery_tasks.create_and_send_uuids.delay")
     def test_send_reminders(self, mocked_celery):
         """Test Send Reminders Endpoint"""
 
