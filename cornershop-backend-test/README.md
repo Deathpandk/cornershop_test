@@ -1,9 +1,40 @@
 ## cornershop-backend-test
 
+## App description
+
+To access Nora's panel go to http://127.0.0.1:8000 and login with a created user.
+
+In "employees" tab you can create and see registered employees, 
+when creating a new employee, make sure to use a valid slack_id,
+app validates slack_id by sending a welcome message.
+
+In "menus" tab you can create new menus for any date and add options to them,
+also you can see every order made for a certain menu.
+
+The Option-Adding form is shared between different menus.
+
+When clicking "send slack messages" app will send reminders to
+all registered employees with their own uuid to make an order.
+
+In /menu/uuid/ employees can make an order for the current day's menu before 11am.
+
+** Some handy features (as update and delete objects) are not available, sorry for that :(.
+
+## Commands
+
+### Configure Slack
+
+* Enter Slack Test workspace to use Nora's App:
+https://join.slack.com/t/slacktestred/shared_invite/zt-1dz9ffw1v-7tQ9wEoAxiVx6KolHPwfxw
+* In channel #general you'll find Nora slack token, on `docker-compose` please set
+env variable SLACK_TOKEN= with the current token
+* You can find example slack id's in Slack Test #general channel for testing purposes
+
 ### Running the development environment
 
 * `make up`
 * `dev up`
+* `dev createsuperuser` (needed for administration panel)
 
 ##### Rebuilding the base Docker image
 
