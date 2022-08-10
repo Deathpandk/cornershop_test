@@ -32,6 +32,9 @@ case ${arg} in
 up|run|server|runserver)
   python manage.py runserver 0.0.0.0:8000
 ;;
+createsuperuser)
+  python manage.py createsuperuser
+;;
 celery)
   celery -A $APP worker -Q $QUEUES
 ;;

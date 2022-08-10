@@ -1,0 +1,26 @@
+<div id="employees-content">
+    <div class="row">
+        <div class="col-12">
+            <div class="mb-3 mt-3">
+              <label for="name" class="form-label">Name:</label>
+              <input type="text" class="form-control" id="name" v-model="name">
+            </div>
+            <div class="mb-3 mt-3">
+              <label for="slack_id" class="form-label">Slack Id:</label>
+              <input type="text" class="form-control" id="slack_id" v-model="slack_id">
+            </div>
+            <button class="btn btn-success" @click="create_employee()">
+                Create Employee
+            </button>
+        </div>
+    </div>
+
+<hr>
+
+    <div class="row" v-for="employee in employees_list">
+        <div class="col-12">
+            <h2>{v employee.name v}</h2>
+            <p>Slack Id: {v employee.slack_id v}</p>
+        </div>
+    </div>
+</div>

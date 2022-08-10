@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mt-5">
+    <div class="col-12">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab"
+                        data-bs-target="#home-tab-pane" type="button" role="tab"
+                        aria-controls="home-tab-pane" aria-selected="true">
+                    Menu
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+            <button class="nav-link" id="profile-tab" data-bs-toggle="tab"
+                    data-bs-target="#profile-tab-pane" type="button" role="tab"
+                    aria-controls="profile-tab-pane" aria-selected="false">
+                Employees
+            </button>
+            </li>
+
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel"
+                 aria-labelledby="home-tab" tabindex="0">
+                {% include "administration/menu.html" %}
+            </div>
+            <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel"
+                 aria-labelledby="profile-tab" tabindex="0">
+                {% include "administration/employees.html" %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script>
+    const menu = new Vue({
+        el: "#menu-content",
+        delimiters: ['{v', 'v}'],
+        data: {
+            base_url: "/api/menu/",
+            menu_list: [],
+            date: "",
+        },
+        methods: {
+            get_menu_list(){
+                var self = this;
+                axios.get(this.base_url)
+                .then(response => {
+                    self.menu_list = response.data
+                })
+            },
+            create_menu(){
+                var self = this;
+                axios.post(this.base_url, {
+                    date: this.date
+                }).then(response => {
+                    self.get_menu_list()
+                    self.date = "";
+                    Swal.fire({
+                        icon: "success",
+                        title: "Menu creado",
+                    })
+                }).catch(error => {
+                    [key, value] = Object.entries(error.response.data)[0]
+                    Swal.fire({
+                        icon: "error",
+                        title: value[0],
+                    })
+                })
+            }
+        },
+        mounted(){
+            this.get_menu_list()
+        }
+    })
+
+    const employees = new Vue({
+        el: "#employees-content",
+        delimiters: ['{v', 'v}'],
+        data: {
+            base_url: "/api/employees/",
+            employees_list: [],
+            name: "",
+            slack_id: "",
+        },
+        methods: {
+            get_employees_list(){
+                var self = this;
+                axios.get(this.base_url)
+                .then(response => {
+                    self.employees_list = response.data
+                })
+            },
+            create_employee(){
+                var self = this;
+                axios.post(this.base_url, {
+                    name: this.name,
+                    slack_id: this.slack_id,
+                }).then(response => {
+                    self.get_employees_list()
+                    Swal.fire({
+                        icon: "success",
+                        title: "Empleado "+self.name+" creado",
+                    })
+                    self.name = "";
+                    self.slack_id = "";
+                }).catch(error => {
+                    [key, value] = Object.entries(error.response.data)[0]
+                    Swal.fire({
+                        icon: "error",
+                        title: value[0],
+                    })
+                })
+            }
+        },
+        mounted(){
+            this.get_employees_list()
+        }
+    })
+</script>
+
+{% endblock %}
